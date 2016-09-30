@@ -8,14 +8,14 @@ from PIL import Image, ImageDraw, ImageFont, ImageColor
 def add_date(filepath, date=None, color='yellow', font_size=None, save_path=None, width=0.7, height=0.9, save_fmt='jpeg'):
     try:
         image = Image.open(filepath)
-    except:
-        raise "文件打开失败，请检查文件路径是否正确..."
+    except BaseException:
+        print("文件打开失败，请检查文件路径是否正确...")
+        return False
     dirname, filename = os.path.split(filepath)[:]
-    file_suffix = os.path.splitext(filepath)[-1]
     image_width, image_height = image.size
     if not date:
         date = datetime.date.isoformat(datetime.date.today())
-    print(date)
+    
     if not font_size:
         font_size = int(image_width/20)
     draw_width = int(image_width*width)
@@ -25,8 +25,11 @@ def add_date(filepath, date=None, color='yellow', font_size=None, save_path=None
     fillcolor = ImageColor.colormap.get(color)
     draw.text((draw_width, draw_height), date, font=draw_font, fill=fillcolor)
     if not save_path:
-        save_path = ''.join(['add_date_image', file_suffix])
-    image.save(save_path, save_fmt)
+        save_path = ''.join(['change_', filename])
+    
+    result = os.path.join(dirname, save_path)
+    image.save(result, save_fmt)
+    print('修改后的图片保存为:{0}'.format(result))
     return True
 
 
@@ -39,7 +42,7 @@ def main():
                         help='日期字体颜色：默认黄色',
                         default='yellow')
     parser.add_argument('-f', '--font_size', help='日期字体大小:默认图片宽度/20 ')
-    parser.add_argument('-s', '--save_path', type=str, help='修改后文件保存名:默认为 change+原文件名')
+    parser.add_argument('-s', '--save_path', type=str, help='修改后文件保存名:默认为 change+原文件名', default=None)
     args = parser.parse_args()
     filepath = args.filepath
     if filepath is None:
