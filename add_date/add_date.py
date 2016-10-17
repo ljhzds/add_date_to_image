@@ -8,7 +8,8 @@ from PIL import Image, ImageDraw, ImageFont, ImageColor
 def add_date(filepath, date=None, color='yellow', font_size=None, save_path=None, width=0.7, height=0.9, save_fmt='jpeg'):
     try:
         image = Image.open(filepath)
-    except BaseException:
+    except BaseException as e:
+        print(e)
         print("文件打开失败，请检查文件路径是否正确...")
         return False
     dirname, filename = os.path.split(filepath)[:]
@@ -21,7 +22,9 @@ def add_date(filepath, date=None, color='yellow', font_size=None, save_path=None
     draw_width = int(image_width*width)
     draw_height = int(image_height*height)
     draw = ImageDraw.Draw(image)
-    draw_font = ImageFont.truetype('./song.ttf', size=font_size)
+    here = os.path.abspath(os.path.dirname(__file__))
+    ttf_file = os.path.join(here, "ttfs/song.ttf")
+    draw_font = ImageFont.truetype(ttf_file, size=font_size)
     fillcolor = ImageColor.colormap.get(color)
     draw.text((draw_width, draw_height), date, font=draw_font, fill=fillcolor)
     if not save_path:

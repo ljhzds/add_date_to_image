@@ -37,7 +37,9 @@ setup(
 
     install_requires=[],
     packages=packages,
-
+    package_dir={'add_date': 'add_date'},
+    include_package_data=True,
+    package_data = {'add_date': ['*.*']},
     classifiers=[
         'Development Status :: 3 - Alpha',
         'Environment :: Pc',
